@@ -15,12 +15,14 @@ class StringSimilarity {
   ///
   /// ##### Returns
   /// (number): A fraction from 0 to 1, both inclusive. Higher number indicates more similarity.
-  static double compareTwoStrings<T>(T? first, T? second,
-      [String? Function(T? it)? transform]) {
-    transform ??= (it) => it is String ? it : it.toString();
+  static double compareTwoStrings<I, T>(I? first, T? second,
+      {String? Function(I? it)? firstTransform,
+      String? Function(T? it)? secondTransform}) {
+    firstTransform ??= (it) => it is String ? it : it.toString();
+    secondTransform ??= (it) => it is String ? it : it.toString();
     // if both are null
-    var firstStr = transform(first);
-    var secondStr = transform(second);
+    var firstStr = firstTransform(first);
+    var secondStr = secondTransform(second);
     if (firstStr == null && secondStr == null) {
       return 1;
     }
@@ -88,15 +90,18 @@ class StringSimilarity {
   ///
   /// ##### Returns
   /// (BestMatch): An object with a ratings property, which gives a similarity rating for each target string, a bestMatch property, which specifies which target string was most similar to the main string, and a bestMatchIndex property, which specifies the index of the bestMatch in the targetStrings array.
-  static BestMatch<T> findBestMatch<T>(T? mainString, List<T?> targetStrings,
-      [String? Function(T? it)? transform]) {
+  static BestMatch<T> findBestMatch<I, T>(I? mainString, List<T?> targetStrings,
+      {String? Function(I? it)? mainTransform,
+      String? Function(T? it)? targetTransform}) {
+    mainTransform ??= (it) => it is String ? it : it.toString();
     final ratings = <Rating<T>>[];
     var bestMatchIndex = 0;
 
     for (var i = 0; i < targetStrings.length; i++) {
       final currentTargetString = targetStrings[i];
-      final currentRating =
-          compareTwoStrings(mainString, currentTargetString, transform);
+      final currentRating = compareTwoStrings<I, T>(
+          mainString, currentTargetString,
+          firstTransform: mainTransform, secondTransform: targetTransform);
       ratings.add(Rating(target: currentTargetString, rating: currentRating));
       if (currentRating > ratings[bestMatchIndex].rating!) {
         bestMatchIndex = i;
@@ -105,7 +110,7 @@ class StringSimilarity {
 
     final bestMatch = ratings[bestMatchIndex];
 
-    return BestMatch(ratings: ratings, bestMatch: bestMatch, bestMatchIndex: bestMatchIndex);
+    return BestMatch(
+        ratings: ratings, bestMatch: bestMatch, bestMatchIndex: bestMatchIndex);
   }
 }
-
