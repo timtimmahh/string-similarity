@@ -110,8 +110,9 @@ void main() {
     });
 
     test('bestMatch extensions method can be call on null anonymous variable', () {
-      final a = null.bestMatch([null]);
-      final b = null.bestMatch(['a']);
+      String? nullStr;
+      final a = nullStr.bestMatch([null]);
+      final b = nullStr.bestMatch(['a']);
 
       expect(a.bestMatch.rating, 1);
       expect(b.bestMatch.rating, 0);
