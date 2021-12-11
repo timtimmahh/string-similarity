@@ -27,7 +27,7 @@ extension TypeExtensions<I> on I? {
   ///
   /// ##### Returns
   /// (BestMatch): An object with a ratings property, which gives a similarity rating for each target string, a bestMatch property, which specifies which target string was most similar to the main string, and a bestMatchIndex property, which specifies the index of the bestMatch in the targetStrings array.
-  BestMatch<T> bestMatch<T>(List<T?> targetStrings,
+  BestMatch<T> findBestMatch<T>(List<T?> targetStrings,
           {String? Function(I? it)? mainTransform,
           String? Function(T? it)? targetTransform}) =>
       StringSimilarity.findBestMatch<I, T>(this, targetStrings,
